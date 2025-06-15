@@ -14,7 +14,7 @@ uploaded_file = st.file_uploader("📁 CSV 파일 업로드", type=["csv"])
 # 업로드한 경우 처리
 if uploaded_file is not None:
     try:
-        data = pd.read_csv(uploaded_file)
+        data = pd.read_csv(uploaded_file, encoding='cp949')
         st.success("✅ CSV 파일을 성공적으로 불러왔습니다.")
         
         # 열이 2개 이상인지 확인
