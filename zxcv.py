@@ -8,27 +8,18 @@ st.title('📊 데이터 시각화 웹앱')
 # 데이터 초기화
 data = None
 
-# Google Drive에서 기본 데이터 불러오기
-default_url = "https://drive.google.com/uc?export=download&id=1pwfON6doXyH5p7AOBJPfiofYlni0HVVY"
-
-st.write("기본 데이터셋이 Google Drive에서 자동으로 로드됩니다. 또는 CSV 파일을 업로드할 수 있습니다.")
+st.write("CSV 파일을 업로드할 수 있습니다.")
 
 # CSV 업로드
 uploaded_file = st.file_uploader("📁 CSV 파일 업로드", type=["csv"])
 
-# 업로드된 파일이 있으면 해당 데이터 사용, 없으면 기본 데이터 사용
+# 기본 데이터 사용
 if uploaded_file is not None:
     try:
         data = pd.read_csv(uploaded_file)
         st.success("✅ 업로드한 CSV 파일을 불러왔습니다.")
     except Exception as e:
         st.error(f"❌ CSV 파일을 읽는 도중 오류가 발생했습니다: {e}")
-else:
-    try:
-        data = pd.read_csv(default_url)
-        st.success("✅ Google Drive에서 기본 CSV 파일을 불러왔습니다.")
-    except Exception as e:
-        st.error(f"❌ 기본 데이터를 불러오는 중 오류가 발생했습니다: {e}")
 
 # 데이터가 있으면 시각화 기능 제공
 if data is not None:
