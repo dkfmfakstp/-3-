@@ -21,16 +21,8 @@ if uploaded_file is not None:
     except Exception as e:
         st.error(f"❌ CSV 파일을 읽는 도중 오류가 발생했습니다: {e}")
 
-# 데이터가 있으면 시각화 기능 제공
-if data is not None:
-    st.write("📋 데이터 미리보기:")
-    st.write(data.head())
-
     # 컬럼 선택
     numeric_columns = data.select_dtypes(include=['float64', 'int64']).columns.tolist()
-    if len(numeric_columns) >= 2:
-        x_axis = st.selectbox("X축 선택", options=numeric_columns, index=0)
-        y_axis = st.selectbox("Y축 선택", options=numeric_columns, index=1)
 
         # 산점도 생성
         fig = px.scatter(data, x=x_axis, y=y_axis, title=f"{x_axis} vs {y_axis}")
