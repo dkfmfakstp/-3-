@@ -5,66 +5,57 @@ from sklearn.linear_model import LinearRegression
 import numpy as np
 
 # 앱 제목
-st.title('📊 생할물가지수 시각화 + 예측')
+st.title('📊 생활물가지수 시각화 및 예측')
 
-# 파일 업로드 안내
-st.write("CSV 파일을 업로드해주세요. (1열: 년도.분기, 2열: 생할물가지수)")
+# CSV 파일 업로드
+uploaded_file = st.file_uploader("📁 CSV 파일 업로드 (1열: 연도, 2열: 생활물가지수)", type=["csv"])
 
-# CSV 업로드
-uploaded_file = st.file_uploader("📁 CSV 파일 업로드", type=["csv"])
-
-# 업로드한 경우 처리
 if uploaded_file is not None:
     try:
-        data = pd.read_csv(uploaded_file, encoding='cp949')
-        st.success("✅ CSV 파일을 성공적으로 끌어왔습니다.")
+        # 파일 읽기
+        df = pd.read_csv(uploaded_file, encoding='cp949')
+        st.success("✅ CSV 파일을 성공적으로 불러왔습니다.")
+        
+        # 열 확인
+        if df.shape[1] >= 2:
+            df.columns = ['연도', '생활물가지수']
 
-        # 열이 2개 이상인지 확인
-        if data.shape[1] >= 2:
-            x_col = data.columns[0]
-            y_col = data.columns[1]
+            # 연도 문자열을 정수형 시계열로 변환
+            df[['year', 'quarter']] = df['연도'].astype(str).str.split('.', expand=True).astype(int)
+            df['numeric_date'] = df['year'] * 4 + df['quarter']
 
-            # 그래프 생성
-            fig = px.line(data, x=x_col, y=y_col, title=f"{x_col} vs {y_col}")
-            st.plotly_chart(fig)
-
-            # 예측 후 더트리언 생성
-            st.subheader("✨ 예측 결과 (다음 10년)")
-
-            # 값 수치화되지 않은 경우 처리
-            df = data[[x_col, y_col]].copy()
-            df.columns = ['date', 'index']
-
-            # 년도.분기 문자열을 수치로 변환 (ex: 1995.1 -> 1995.0, 1995.4 -> 1995.75)
-            df['numeric_date'] = df['date'].astype(str).str.extract(r'(\d{4})\.(\d)').astype(float)
-            df['numeric_date'] = df['numeric_date'][0] + (df['numeric_date'][1] - 1) * 0.25
-
-            # 데이터 형태 검사
-            df.dropna(inplace=True)
-            X = df[['numeric_date']].values
-            y = df['index'].values
-
-            # 선형 행렬 형식 통계 문으로 환샜
+            # 모델 학습
             model = LinearRegression()
+            X = df[['numeric_date']]
+            y = df['생활물가지수']
             model.fit(X, y)
 
-            # 다음 10년간 40분기 예측
-            last = df['numeric_date'].max()
-            future_dates = np.array([last + 0.25 * i for i in range(1, 41)])
+            # 미래 10년 (40분기) 예측
+            last_date = df['numeric_date'].max()
+            future_dates = np.arange(last_date + 1, last_date + 41)
             future_preds = model.predict(future_dates.reshape(-1, 1))
 
-            # 예측 결과 보유
+            # 연도.분기 형식으로 변환
+            future_years = future_dates // 4
+            future_quarters = future_dates % 4 + 1
+            future_labels = future_years.astype(str) + '.' + future_quarters.astype(str)
+
             future_df = pd.DataFrame({
-                'date': [f"{int(d)}.{int((d%1)*4+1)}" for d in future_dates],
-                'index': future_preds
+                '연도': future_labels,
+                '생활물가지수': future_preds
             })
 
-            # 열랍기 기준 각종 결과
-            total_df = pd.concat([df[['date', 'index']], future_df], ignore_index=True)
-            fig2 = px.line(total_df, x='date', y='index', title="생할물가지수 (기초+예측)")
-            st.plotly_chart(fig2)
+            # 시각화
+            combined_df = pd.concat([df[['연도', '생활물가지수']], future_df], ignore_index=True)
+            fig = px.line(combined_df, x='연도', y='생활물가지수', title='생활물가지수 (실제 + 예측)')
+            st.plotly_chart(fig)
+
+            # CSV 다운로드
+            csv = future_df.to_csv(index=False, encoding='utf-8-sig')
+            st.download_button(label="📥 예측 결과 CSV 다운로드", data=csv, file_name="예측_생활물가지수.csv", mime='text/csv')
 
         else:
-            st.warning("❗ CSV 파일에 최소 두 개의 열이 필요합니다.")
+            st.warning("❗ CSV 파일에는 최소 두 개의 열이 필요합니다.")
+
     except Exception as e:
         st.error(f"❌ 오류 발생: {e}")
