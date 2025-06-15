@@ -21,7 +21,7 @@ if uploaded_file is not None:
             df.columns = ['연도', '생활물가지수']
 
             # 연도 문자열을 정수형 시계열로 변환
-            df[['year', 'quarter']] = df['연도'].astype(str).str.split('.', expand=True).astype(int)
+            df[['year', 'quarter']] = df['연도'].astype(str).str.split('/', expand=True).astype(int)
             df['numeric_date'] = df['year'] * 4 + df['quarter']
 
             # 모델 학습
