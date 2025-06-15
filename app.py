@@ -52,6 +52,7 @@ if uploaded_file is not None:
             fig = px.line(combined_df, x='연도', y='생활물가지수', title='생활물가지수 (실제 + 예측)')
             st.plotly_chart(fig)
 
+            # CSV 다운로드
             csv = future_df.to_csv(index=False, encoding='utf-8-sig')
             st.download_button(label="📥 예측 결과 CSV 다운로드", data=csv, file_name="예측_생활물가지수.csv", mime='text/csv')
 
