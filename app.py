@@ -35,15 +35,6 @@ if uploaded_file is not None:
             future_dates = np.arange(last_date + 1, last_date + 41)
             future_preds = model.predict(future_dates.reshape(-1, 1))
 
-            # 연도.분기 형식으로 변환
-            future_years = future_dates // 4
-            future_quarters = future_dates % 4 + 1
-            future_labels = future_years.astype(str) + '.' + future_quarters.astype(str)
-
-            future_df = pd.DataFrame({
-                '연도': future_labels,
-                '생활물가지수': future_preds
-            })
 
             # 시각화
             combined_df = pd.concat([df[['연도', '생활물가지수']], future_df], ignore_index=True)
