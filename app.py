@@ -13,7 +13,7 @@ uploaded_file = st.file_uploader("📁 CSV 파일 업로드 (1열: 연도, 2열:
 if uploaded_file is not None:
     try:
         # 파일 읽기
-        df = pd.read_csv(uploaded_file, encoding='cp949')
+        df = pd.read_csv(uploaded_file, encoding='cp949') 
         st.success("✅ CSV 파일을 성공적으로 불러왔습니다.")
         
         # 열 확인
@@ -21,7 +21,7 @@ if uploaded_file is not None:
             df.columns = ['연도', '생활물가지수']
 
             # 연도 문자열을 정수형 시계열로 변환
-            df[['year', 'quarter']] = df['연도'].astype(str).str.split('.', expand=True).astype(int)
+            df[['year', 'quarter']] = df['연도'].astype(str).str.split('/', expand=True).astype(int)
             df['numeric_date'] = df['year'] * 4 + df['quarter']
 
             # 모델 학습
