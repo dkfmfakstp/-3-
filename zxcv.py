@@ -23,7 +23,7 @@ if uploaded_file is not None:
 
     # 컬럼 선택
     numeric_columns = data.select_dtypes(include=['float64', 'int64']).columns.tolist()
-        if len(numeric_columns) >= 2:
+    if len(numeric_columns) >= 2:
         x_axis = st.selectbox("X축 선택", options=numeric_columns, index=0)
         y_axis = st.selectbox("Y축 선택", options=numeric_columns, index=1)
 
