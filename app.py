@@ -53,7 +53,7 @@ if uploaded_file is not None:
             st.plotly_chart(fig)   #만들어진 그래프 시각화
 
             # CSV 다운로드
-            csv = futur기
+            csv = csv = future_df.to_csv(index=False, encoding='cp949')
             st.download_button(label="📥 예측 결과 CSV 다운로드", data=csv, file_name="예측_생활물가지수.csv", mime='text/csv')
 
 
