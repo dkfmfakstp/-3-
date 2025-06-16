@@ -53,8 +53,8 @@ if uploaded_file is not None:
             st.plotly_chart(fig)   #만들어진 그래프 시각화
 
             # CSV 다운로드
-            csv = csv = future_df.to_csv(index=False, encoding='cp949')
-            st.download_button(label="📥 예측 결과 CSV 다운로드", data=csv, file_name="예측_생활물가지수.csv", mime='text/csv')
+            csv = csv = future_df.to_csv(index=False, encoding='cp949')    #예측값을 csv파일로 변환하여 저장
+            st.download_button(label="📥 예측 결과 CSV 다운로드", data=csv, file_name="예측_생활물가지수.csv", mime='text/csv')    #파일을 다운로드 할 수 있는 버튼
 
 
         else:
@@ -62,4 +62,4 @@ if uploaded_file is not None:
 
 
     except Exception as e:
-        st.error("❌ 오류 발생")   
+        st.error("❌ 오류 발생")   #과정에서 오류가 발생할 경우
