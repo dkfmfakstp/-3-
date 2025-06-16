@@ -60,5 +60,5 @@ if uploaded_file is not None:
         else:
             st.warning("❗ CSV 파일에는 최소 두 개의 열이 필요합니다.")     #열이 2개 이상이 아닐경우
 
-    except Exception as e:
-        st.error("❌ 오류 발생")   
+except Exception as e:
+st.error("❌ 오류 발생")   
